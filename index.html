@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Permite usar caracteres especiales como ñ y tildes -->
+  <meta charset="UTF-8">
+  
+  <!-- Hace que la página se adapte a celulares, tablets y computadores -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+  
+  <title>Calculadora de Volúmenes 3D</title>
+  
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  
+  <!-- p5.js CDN para gráficos 3D interactivos -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 antialiased font-sans">
+
+  <!-- ENCABEZADO: muestra el nombre principal del proyecto -->
+  <header class="bg-blue-600 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">📐</span>
+        <h1 class="text-xl font-bold tracking-tight">Calculadora de Volúmenes 3D</h1>
+      </div>
+      
+      
+      <!-- Información del proyecto -->
+      <div class="hidden sm:inline-flex items-center text-xs bg-blue-700/80 px-3 py-1.5 rounded-full font-mono text-blue-100">
+        Proyecto Estudiante • Juan Felipe Ardila (HTML + app.js + scripts.js)
+      </div>
+    </div>
+  </header>
+
+
+  <!-- CONTENIDO PRINCIPAL DE LA PÁGINA -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    
+    <!-- BANNER: explica brevemente para qué sirve la calculadora -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        
+        
+        <h2 class="text-lg font-semibold text-slate-900">Calculadora básica de figuras geométricas</h2>
+        <p class="text-sm text-slate-500 mt-1">Selecciona una figura, introduce sus medidas y observa la figura en 3D mientras calculas el volumen.</p>
+      </div>
+    </div>
+
+
+    <!-- DIVIDE LA PÁGINA EN DOS PARTES: izquierda = calculadora derecha = visor 3D -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+
+      <!-- COLUMNA IZQUIERDA: selección, medidas y resultado -->
+      <section class="lg:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+        
+
+        <!-- 1. Selección de Figura -->
+        <div>
+          <label for="figura-select" class="block text-sm font-semibold text-slate-800 mb-2">
+            1. Selecciona la Figura:
+          </label>
+          <select id="figura-select" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+            <option value="cubo" selected>Cubo</option>
+            <option value="prisma">Prisma rectangular</option>
+            <option value="cilindro">Cilindro</option>
+            <option value="cono">Cono</option>
+            <option value="esfera">Esfera</option>
+          </select>
+        </div>
+
+
+        <!-- MUESTRA LA FÓRMULA DE LA FIGURA SELECCIONADA -->
+        <div id="formula-box" class="bg-blue-50/70 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-900 font-medium flex items-center justify-between">
+          <span class="text-blue-700 font-semibold">Fórmula:</span>
+          <span id="formula-texto" class="font-mono text-blue-950 font-bold">V = lado³</span>
+        </div>
+
+        <!-- Línea separadora -->
+        <hr class="border-slate-100">
+
+        <!-- CAMPOS PARA LAS MEDIDAS -->
+        <div>
+          <h3 class="text-sm font-semibold text-slate-800 mb-3">2. Medidas (cm):</h3>
+          
+          <div class="space-y-4">
+            <!-- Campo Lado (Cubo) -->
+            <div id="campo-lado" class="campo-medida">
+              <label for="input-lado" class="block text-xs font-medium text-slate-600 mb-1">Lado (l):</label>
+             
+             
+             <!-- El usuario introduce el valor del lado -->
+              <input type="number" id="input-lado" min="0.1" step="0.5" value="5" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+            </div>
+
+            <!-- Campo Ancho (Prisma) -->
+            <div id="campo-ancho" class="campo-medida hidden">
+              <label for="input-ancho" class="block text-xs font-medium text-slate-600 mb-1">Ancho (a):</label>
+              <input type="number" id="input-ancho" min="0.1" step="0.5" value="4" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+            </div>
+
+            <!-- Campo Largo / Profundidad (Prisma) -->
+            <div id="campo-largo" class="campo-medida hidden">
+              <label for="input-largo" class="block text-xs font-medium text-slate-600 mb-1">Largo (b):</label>
+              <input type="number" id="input-largo" min="0.1" step="0.5" value="6" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+            </div>
+
+            <!-- Campo Radio (Cilindro, Cono, Esfera) -->
+            <div id="campo-radio" class="campo-medida hidden">
+              <label for="input-radio" class="block text-xs font-medium text-slate-600 mb-1">Radio (r):</label>
+              <input type="number" id="input-radio" min="0.1" step="0.5" value="3" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+            </div>
+
+            <!-- Campo Altura (Prisma, Cilindro, Cono) -->
+            <div id="campo-altura" class="campo-medida hidden">
+              <label for="input-altura" class="block text-xs font-medium text-slate-600 mb-1">Altura (h):</label>
+              <input type="number" id="input-altura" min="0.1" step="0.5" value="8" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button type="button" id="btn-calcular" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium rounded-xl text-sm shadow-sm hover:shadow transition">
+            <span>🧮</span> Calcular Volumen
+          </button>
+          
+          <button type="button" id="btn-restablecer" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-medium rounded-xl text-sm shadow-sm transition">
+            <span>↺</span> Restablecer
+          </button>
+        </div>
+
+        <!-- SECCIÓN DE RESULTADO (Oculta por defecto) -->
+        <div id="seccion-resultado" class="hidden pt-4 border-t border-slate-100">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Resultado:</span>
+          <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-inner border border-slate-800">
+            <span class="text-xs text-slate-400 block mb-1">Volumen Calculado:</span>
+            <div class="flex items-baseline gap-2">
+              <span id="valor-volumen" class="text-3xl font-extrabold text-white tracking-tight">125,00</span>
+              <span class="text-base text-blue-400 font-bold">cm³</span>
+            </div>
+            
+            
+            <!-- Aquí se muestra el procedimiento del cálculo -->
+            <p id="desglose-calculo" class="text-xs font-mono text-slate-300 mt-2 pt-2 border-t border-slate-800">
+              5³ = 5 × 5 × 5 = 125.00 cm³
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- COLUMNA DERECHA: Visor 3D de Figuras -->
+      <section class="lg:col-span-7 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-base font-semibold text-slate-900">Visor 3D Interactivo (p5.js WEBGL)</h3>
+          </div>
+          </div>
+        
+
+        <!-- Contenedor del Canvas 3D -->
+        <div id="canvas-container" class="w-full h-[450px] bg-slate-50/50 rounded-xl border border-slate-200/80 overflow-hidden flex items-center justify-center relative shadow-inner">
+          <!-- Canvas WebGL generado dinámicamente por scripts.js -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Enlace a los archivos separados en orden: primero la lógica de la calculadora y luego el visor 3D -->
+  <script src="apps.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
+
