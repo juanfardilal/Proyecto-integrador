@@ -6,6 +6,7 @@ let rotacionX = -0.3;
 let rotacionY = 0.5;
 
 
+
 // FUNCIÓN PRINCIPAL DEL VISOR 3D
 // "p" representa la instancia de p5.js.
 function visor3D(p) {
@@ -14,19 +15,15 @@ function visor3D(p) {
   // Se ejecuta una sola vez cuando se crea el visor.
   p.setup = function () {
 
-    // Busca en el HTML el espacio donde estará el canvas.
+    // Busca en el HTML el espacio donde estará el canvas(linea 169).
     const contenedor = document.getElementById("canvas-container");
 
-    // Tamaño inicial del canvas.
+    // Tamaño inicial del canvas si encuentra
     let ancho = 500;
     let alto = 450;
 
     // Si encuentra el contenedor, utiliza su tamaño real.
-    if (contenedor) {
-      ancho = contenedor.clientWidth;
-      alto = contenedor.clientHeight;
-    }
-
+   
     // Crea el canvas utilizando WEBGL para poder trabajar en 3D.
     const canvas = p.createCanvas(ancho, alto, p.WEBGL);
 
